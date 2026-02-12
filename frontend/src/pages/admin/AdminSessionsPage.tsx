@@ -15,7 +15,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import { useSessions, useDeleteSession, useUpdateSession } from '../../hooks/useSessions';
+import { useSessions, useCreateSession, useDeleteSession, useUpdateSession } from '../../hooks/useSessions';
 import { format, isAfter, isBefore, startOfDay } from 'date-fns';
 import { he } from 'date-fns/locale';
 import toast from 'react-hot-toast';
@@ -32,31 +32,24 @@ const CreateSessionModal: React.FC<CreateSessionModalProps> = ({ isOpen, onClose
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [showResponses, setShowResponses] = useState(true);
+  const createSession = useCreateSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      // Combine date and time into datetime
-      const datetime = new Date(`${date}T${time}`);
-      
-      const sessionData = {
+      await createSession.mutateAsync({
         title: title.trim(),
         description: description.trim() || undefined,
         date,
         time,
-        datetime: datetime.toISOString(),
         showResponsesToParticipants: showResponses
-      };
+      });
 
-      // TODO: Call create session API
-      console.log('Creating session:', sessionData);
-      
-      toast.success(t('sessions.sessionAdded'));
       onClose();
       resetForm();
     } catch (error) {
-      toast.error('שגיאה ביצירת השיעור');
+      // Error toast handled by the hook
     }
   };
 
