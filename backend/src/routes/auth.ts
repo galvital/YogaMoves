@@ -32,6 +32,12 @@ router.post('/google/callback', async (req, res) => {
       return res.status(400).json({ error: 'Failed to get user information from Google' });
     }
 
+    // Only allow specific admin email
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'noa.fisch@gmail.com';
+    if (userInfo.email !== ADMIN_EMAIL) {
+      return res.status(403).json({ error: 'Unauthorized. Only the studio admin can log in with Google.' });
+    }
+
     // Check if admin user exists
     const existingUser = await db.query.users.findFirst({
       where: eq(schema.users.googleId, userInfo.id!)
@@ -135,10 +141,14 @@ router.post('/otp/request', validate(otpRequestSchema), async (req, res) => {
       expiresAt: expiresAt.toISOString()
     });
 
-    // Send SMS (mocked)
+    // Send SMS (mocked in development - OTP is logged to console)
     await sendSMS(formattedPhone, `Your YogaMoves verification code is: ${code}`);
 
-    res.json({ message: 'OTP sent successfully' });
+    const isDev = process.env.NODE_ENV !== 'production';
+    res.json({ 
+      message: 'OTP sent successfully',
+      ...(isDev && { debugOtp: code }) // Only in development!
+    });
   } catch (error) {
     console.error('OTP request error:', error);
     res.status(500).json({ error: 'Failed to send OTP' });
