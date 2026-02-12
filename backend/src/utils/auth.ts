@@ -48,16 +48,23 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
-// Google OAuth setup
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI
-);
+// Google OAuth setup (lazy init so dotenv loads first)
+let _oauth2Client: InstanceType<typeof google.auth.OAuth2> | null = null;
+
+function getOAuth2Client() {
+  if (!_oauth2Client) {
+    _oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI
+    );
+  }
+  return _oauth2Client;
+}
 
 export function getGoogleAuthUrl(): string {
   const scopes = ['profile', 'email'];
-  return oauth2Client.generateAuthUrl({
+  return getOAuth2Client().generateAuthUrl({
     access_type: 'offline',
     scope: scopes,
   });
@@ -65,6 +72,7 @@ export function getGoogleAuthUrl(): string {
 
 export async function getGoogleUserInfo(code: string) {
   try {
+    const oauth2Client = getOAuth2Client();
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
 
