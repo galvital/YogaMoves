@@ -152,14 +152,14 @@ const AdminSessionDetailPage: React.FC = () => {
     }
   };
 
-  // Get participants not yet responded
-  const respondedParticipantIds = responses.map(r => r.participantId);
-  const unrespondedParticipants = participants.filter(p => !respondedParticipantIds.includes(p.id));
+  // Separate actual responses from non-responded participants
+  const actualResponses = responses.filter((r: any) => r.status !== null && r.status !== undefined);
+  const nonResponded = responses.filter((r: any) => r.status === null || r.status === undefined);
 
-  // Statistics
-  const joiningCount = responses.filter(r => r.status === 'joining').length;
-  const notJoiningCount = responses.filter(r => r.status === 'not_joining').length;
-  const maybeCount = responses.filter(r => r.status === 'maybe').length;
+  // Statistics (only count actual responses)
+  const joiningCount = actualResponses.filter((r: any) => r.status === 'joining').length;
+  const notJoiningCount = actualResponses.filter((r: any) => r.status === 'not_joining').length;
+  const maybeCount = actualResponses.filter((r: any) => r.status === 'maybe').length;
 
   return (
     <div className="container py-6 space-y-6">
@@ -272,7 +272,7 @@ const AdminSessionDetailPage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-500 mb-1">סה"כ תגובות</p>
-              <p className="text-2xl font-bold text-neutral-800">{responses.length}</p>
+              <p className="text-2xl font-bold text-neutral-800">{actualResponses.length}</p>
             </div>
             <Users className="w-8 h-8 text-neutral-400" />
           </div>
@@ -399,17 +399,18 @@ const AdminSessionDetailPage: React.FC = () => {
               <p className="text-sm text-neutral-500">שתף את קישור השיעור כדי לקבל תגובות</p>
             </div>
           ) : (
-            responses.map((response) => {
-              const participant = participants.find(p => p.id === response.participantId);
+            actualResponses.map((response: any) => {
+              const participant = participants.find(p => p.id === (response.participantId || response.id));
+              const displayName = response.name || response.participantName || participant?.name || 'משתתף לא ידוע';
               return (
-                <div key={response.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:border-primary-200 transition-colors">
+                <div key={response.id || response.participantId} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:border-primary-200 transition-colors">
                   <div className="flex items-center space-x-4 rtl:space-x-reverse">
                     <div className="flex-shrink-0">
                       {getStatusIcon(response.status)}
                     </div>
                     <div>
                       <p className="font-medium text-neutral-800">
-                        {participant?.name || 'משתתף לא ידוע'}
+                        {displayName}
                       </p>
                       <div className="flex items-center space-x-2 rtl:space-x-reverse mt-1">
                         <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(response.status)}`}>
