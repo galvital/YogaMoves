@@ -18,8 +18,8 @@ const LoginPage: React.FC = () => {
     try {
       const res = await fetch('/api/auth/google/url');
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.authUrl || data.url) {
+        window.location.href = data.authUrl || data.url;
       }
     } catch (err) {
       console.error('Failed to get Google auth URL', err);
