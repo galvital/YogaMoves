@@ -87,7 +87,6 @@ const AdminSessionDetailPage: React.FC = () => {
         sessionId: sessionId!,
         participantId: selectedParticipantId,
         status: selectedStatus,
-        adminOverride: true
       });
       
       toast.success(t('admin.responseOverridden'));
@@ -99,12 +98,12 @@ const AdminSessionDetailPage: React.FC = () => {
     }
   };
 
-  const handleUpdateResponse = async (responseId: string, newStatus: 'joining' | 'not_joining' | 'maybe') => {
+  const handleUpdateResponse = async (participantId: string, newStatus: 'joining' | 'not_joining' | 'maybe') => {
     try {
       await updateResponseMutation.mutateAsync({
-        responseId,
+        sessionId: sessionId!,
+        participantId,
         status: newStatus,
-        adminOverride: true
       });
       
       toast.success(t('admin.responseOverridden'));
@@ -428,7 +427,7 @@ const AdminSessionDetailPage: React.FC = () => {
                   <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <select
                       value={response.status}
-                      onChange={(e) => handleUpdateResponse(response.id, e.target.value as any)}
+                      onChange={(e) => handleUpdateResponse(response.participantId || response.id, e.target.value as any)}
                       className="text-sm border border-neutral-200 rounded px-2 py-1 focus:border-primary-500 focus:ring-0"
                     >
                       <option value="joining">מצטרף</option>
@@ -441,6 +440,41 @@ const AdminSessionDetailPage: React.FC = () => {
             })
           )}
         </div>
+
+        {/* Non-responded participants */}
+        {nonResponded.length > 0 && (
+          <div className="mt-6 pt-6 border-t border-neutral-100">
+            <h3 className="text-sm font-medium text-neutral-500 mb-3">לא הגיבו ({nonResponded.length})</h3>
+            <div className="space-y-2">
+              {nonResponded.map((p: any) => {
+                const displayName = p.name || participants.find(pt => pt.id === p.id)?.name || 'משתתף לא ידוע';
+                return (
+                  <div key={p.id} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+                    <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                      <HelpCircle className="w-4 h-4 text-neutral-400" />
+                      <span className="text-sm text-neutral-600">{displayName}</span>
+                    </div>
+                    <select
+                      defaultValue=""
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          handleUpdateResponse(p.participantId || p.id, e.target.value as any);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="text-xs border border-neutral-200 rounded px-2 py-1 focus:border-primary-500 focus:ring-0"
+                    >
+                      <option value="">סמן נוכחות...</option>
+                      <option value="joining">מצטרף</option>
+                      <option value="not_joining">לא מצטרף</option>
+                      <option value="maybe">אולי</option>
+                    </select>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
