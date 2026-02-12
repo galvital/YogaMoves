@@ -14,8 +14,16 @@ const LoginPage: React.FC = () => {
   const sendOtp = useSendOtp();
   const verifyOtp = useVerifyOtp();
 
-  const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/google';
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await fetch('/api/auth/google/url');
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error('Failed to get Google auth URL', err);
+    }
   };
 
   const handlePhoneSubmit = (e: React.FormEvent) => {
