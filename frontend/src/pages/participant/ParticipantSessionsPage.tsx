@@ -12,7 +12,7 @@ import {
   Share2,
   AlertCircle
 } from 'lucide-react';
-import { useSessions } from '../../hooks/useSessions';
+import { useParticipantSessions } from '../../hooks/useSessions';
 import { useAuth } from '../../contexts/AuthContext';
 import { format, isAfter, isBefore, startOfDay } from 'date-fns';
 import { he } from 'date-fns/locale';
@@ -24,7 +24,7 @@ const ParticipantSessionsPage: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'past' | 'responded' | 'pending'>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data: sessions = [], isLoading } = useSessions();
+  const { data: sessions = [], isLoading } = useParticipantSessions();
 
   // Mock user responses (replace with actual API data)
   const mockUserResponses = sessions.map(session => ({

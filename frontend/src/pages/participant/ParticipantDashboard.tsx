@@ -13,7 +13,7 @@ import {
   Target,
   Activity
 } from 'lucide-react';
-import { useSessions } from '../../hooks/useSessions';
+import { useParticipantSessions } from '../../hooks/useSessions';
 import { useAuth } from '../../contexts/AuthContext';
 import { format, isAfter, isBefore, startOfMonth, endOfMonth } from 'date-fns';
 import { he } from 'date-fns/locale';
@@ -22,7 +22,7 @@ const ParticipantDashboard: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   
-  const { data: sessions = [], isLoading } = useSessions();
+  const { data: sessions = [], isLoading } = useParticipantSessions();
 
   // Calculate user stats
   const now = new Date();
