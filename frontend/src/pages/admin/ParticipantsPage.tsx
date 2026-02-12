@@ -96,7 +96,7 @@ const ParticipantModal: React.FC<ParticipantModalProps> = ({ isOpen, onClose, pa
                 onChange={(e) => setName(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:border-primary-500 focus:ring-0"
-                placeholder="שם המשתתף"
+                placeholder={t('participants.participantNamePlaceholder')}
               />
             </div>
 
@@ -131,7 +131,7 @@ const ParticipantModal: React.FC<ParticipantModalProps> = ({ isOpen, onClose, pa
                 className="flex-1 px-4 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {(createParticipantMutation.isLoading || updateParticipantMutation.isLoading) 
-                  ? 'שומר...' 
+                  ? t('app.saving') 
                   : t('app.save')
                 }
               </button>
@@ -188,7 +188,7 @@ const ParticipantsPage: React.FC = () => {
             {t('participants.title')}
           </h1>
           <p className="text-neutral-600 mt-1">
-            ניהול המשתתפים בשיעורי היוגה
+            {t('participants.subtitle')}
           </p>
         </div>
         

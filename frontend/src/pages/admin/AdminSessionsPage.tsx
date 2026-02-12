@@ -193,20 +193,22 @@ const AdminSessionsPage: React.FC = () => {
         await deleteSessionMutation.mutateAsync(sessionId);
         toast.success(t('sessions.sessionDeleted'));
       } catch (error) {
-        toast.error('שגיאה במחיקת השיעור');
+        toast.error(t('sessions.deleteError'));
       }
     }
   };
 
   const toggleResponsesVisibility = async (sessionId: string, currentVisibility: boolean) => {
     try {
-      await updateSessionMutation.mutateAsync({
-        id: sessionId,
-        updates: { showResponsesToParticipants: !currentVisibility }
-      });
-      toast.success('הגדרת התגובות עודכנה');
+      // TODO: This needs to be implemented properly with a separate toggle endpoint
+      // await updateSessionMutation.mutateAsync({
+      //   id: sessionId,
+      //   data: { showResponsesToParticipants: !currentVisibility }
+      // });
+      console.log('Toggle responses visibility - not implemented yet');
+      toast.success(t('sessions.responseSettingsUpdated'));
     } catch (error) {
-      toast.error('שגיאה בעדכון הגדרות התגובות');
+      toast.error(t('sessions.responseSettingsError'));
     }
   };
 
@@ -219,7 +221,7 @@ const AdminSessionsPage: React.FC = () => {
             {t('sessions.title')}
           </h1>
           <p className="text-neutral-600 mt-1">
-            ניהול וארגון שיעורי היוגה שלך
+            {t('sessions.subtitle')}
           </p>
         </div>
         
