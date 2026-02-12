@@ -185,7 +185,13 @@ export const useSubmitResponse = () => {
 // Aliases for backward compatibility with page imports
 export const useSessions = useAdminSessions;
 export const useSession = useAdminSession;
-export const useSessionResponses = (sessionId: string) => useAdminSession(sessionId);
+export const useSessionResponses = (sessionId: string) => {
+  const query = useAdminSession(sessionId);
+  return {
+    ...query,
+    data: query.data?.responses || [],
+  };
+};
 export const useUpdateSessionResponse = useUpdateParticipantResponse;
 
 export const useDeleteResponse = () => {
