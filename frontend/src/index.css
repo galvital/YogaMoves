@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-primary-50 text-neutral-800;
+  }
+
+  /* RTL Support */
+  [dir="rtl"] {
+    direction: rtl;
+  }
+  
+  [dir="ltr"] {
+    direction: ltr;
+  }
+}
+
+@layer components {
+  /* Button Components */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply btn bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500 shadow-sm;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-secondary-500 text-white hover:bg-secondary-600 focus:ring-secondary-500 shadow-sm;
+  }
+  
+  .btn-outline {
+    @apply btn border border-primary-300 text-primary-700 hover:bg-primary-50 focus:ring-primary-500;
+  }
+  
+  .btn-ghost {
+    @apply btn text-primary-700 hover:bg-primary-100 focus:ring-primary-500;
+  }
+  
+  /* Input Components */
+  .input {
+    @apply w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
+  }
+  
+  .input-error {
+    @apply border-red-500 focus:ring-red-500;
+  }
+  
+  /* Card Components */
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-neutral-200;
+  }
+  
+  .card-padding {
+    @apply p-6;
+  }
+  
+  /* Text Components */
+  .text-heading {
+    @apply font-display font-semibold text-neutral-900;
+  }
+  
+  .text-subheading {
+    @apply font-medium text-neutral-700;
+  }
+  
+  .text-body {
+    @apply text-neutral-600;
+  }
+  
+  .text-muted {
+    @apply text-neutral-500;
+  }
+  
+  /* Status Badges */
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-joining {
+    @apply status-badge bg-secondary-100 text-secondary-800;
+  }
+  
+  .status-not-joining {
+    @apply status-badge bg-red-100 text-red-800;
+  }
+  
+  .status-maybe {
+    @apply status-badge bg-accent-100 text-accent-800;
+  }
+  
+  /* Loading Animation */
+  .loading-spinner {
+    @apply animate-spin rounded-full h-5 w-5 border-b-2 border-primary-600;
+  }
+  
+  /* Floating Action Button */
+  .fab {
+    @apply fixed bottom-6 right-6 w-14 h-14 bg-primary-500 text-white rounded-full shadow-lg hover:bg-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-300 transition-all duration-200 flex items-center justify-center z-50;
+  }
+  
+  /* Modal Backdrop */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40;
+  }
+  
+  /* Container */
+  .container {
+    @apply max-w-md mx-auto px-4 sm:px-6;
+  }
+  
+  /* Page Transitions */
+  .page-enter {
+    @apply opacity-0 transform translate-y-4;
+  }
+  
+  .page-enter-active {
+    @apply opacity-100 transform translate-y-0 transition-all duration-300;
+  }
+}
+
+@layer utilities {
+  /* RTL Utilities */
+  .rtl\:ml-auto:where([dir="rtl"] *) {
+    margin-left: auto;
+  }
+  
+  .rtl\:mr-auto:where([dir="rtl"] *) {
+    margin-right: auto;
+  }
+  
+  .rtl\:text-right:where([dir="rtl"] *) {
+    text-align: right;
+  }
+  
+  .rtl\:text-left:where([dir="rtl"] *) {
+    text-align: left;
+  }
+  
+  /* Safe Area */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Gradient Backgrounds */
+  .bg-gradient-yoga {
+    background: linear-gradient(135deg, #F8F6FF 0%, #E4D4FF 50%, #D1B8FF 100%);
+  }
+  
+  .bg-gradient-nature {
+    background: linear-gradient(135deg, #F0FDF5 0%, #DCFCE7 50%, #BBF7D0 100%);
+  }
+}
