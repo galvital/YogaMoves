@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useParticipantSession, useSubmitResponse } from '../../hooks/useSessions';
-import { LanguageToggle } from '../../components/common/LanguageToggle';
+import LanguageToggle from '../../components/common/LanguageToggle';
 import { ResponseStatus } from '../../types';
 import { format, parseISO, isPast } from 'date-fns';
 import { he, enUS } from 'date-fns/locale';
