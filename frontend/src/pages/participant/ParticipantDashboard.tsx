@@ -44,21 +44,16 @@ const ParticipantDashboard: React.FC = () => {
     return sessionDate >= monthStart && sessionDate <= monthEnd;
   });
 
-  // Mock user responses data (replace with actual API data)
-  const mockUserResponses = sessions.map(session => ({
-    sessionId: session.id,
-    status: ['joining', 'not_joining', 'maybe', null][Math.floor(Math.random() * 4)]
-  }));
-
-  const respondedSessions = mockUserResponses.filter(r => r.status !== null).length;
-  const joinedSessions = mockUserResponses.filter(r => r.status === 'joining').length;
+  // Calculate actual user response statistics
+  const respondedSessions = sessions.filter(s => s.myResponse).length;
+  const joinedSessions = sessions.filter(s => s.myResponse?.status === 'joining').length;
   const attendanceRate = sessions.length > 0 ? (joinedSessions / sessions.length) * 100 : 0;
 
   const getTimeOfDay = () => {
     const hour = now.getHours();
-    if (hour < 12) return 'בוקר טוב';
-    if (hour < 18) return 'צהריים טובים';
-    return 'ערב טוב';
+    if (hour < 12) return t('dashboard.goodMorning');
+    if (hour < 18) return t('dashboard.goodAfternoon');
+    return t('dashboard.goodEvening');
   };
 
   const getStatusIcon = (status: string | null) => {
@@ -77,13 +72,13 @@ const ParticipantDashboard: React.FC = () => {
   const getStatusText = (status: string | null) => {
     switch (status) {
       case 'joining':
-        return 'מצטרפת';
+        return t('responses.joining');
       case 'not_joining':
-        return 'לא מצטרפת';
+        return t('responses.notJoining');
       case 'maybe':
-        return 'אולי';
+        return t('responses.maybe');
       default:
-        return 'טרם הגבת';
+        return t('responses.noResponse');
     }
   };
 
@@ -108,7 +103,7 @@ const ParticipantDashboard: React.FC = () => {
           {getTimeOfDay()}, {user?.name?.split(' ')[0]} 🧘‍♀️
         </h1>
         <p className="text-neutral-600 text-lg">
-          ברוכה הבאה למרחב היוגה האישי שלך
+          {t('dashboard.welcome')}
         </p>
       </div>
 
@@ -124,7 +119,7 @@ const ParticipantDashboard: React.FC = () => {
             </span>
           </div>
           <p className="text-sm text-neutral-600 font-medium">
-            שיעורים קרובים
+            {t('dashboard.upcomingSessions')}
           </p>
         </div>
 
@@ -138,7 +133,7 @@ const ParticipantDashboard: React.FC = () => {
             </span>
           </div>
           <p className="text-sm text-neutral-600 font-medium">
-            השתתפתי
+            {t('dashboard.attended')}
           </p>
         </div>
 
@@ -152,7 +147,7 @@ const ParticipantDashboard: React.FC = () => {
             </span>
           </div>
           <p className="text-sm text-neutral-600 font-medium">
-            שיעור נוכחות
+            {t('dashboard.attendanceRate')}
           </p>
         </div>
 
@@ -166,7 +161,7 @@ const ParticipantDashboard: React.FC = () => {
             </span>
           </div>
           <p className="text-sm text-neutral-600 font-medium">
-            שיעורים החודש
+            {t('dashboard.monthSessions')}
           </p>
         </div>
       </div>
@@ -199,7 +194,7 @@ const ParticipantDashboard: React.FC = () => {
           </h2>
           <div className="space-y-3">
             {todaySessions.map((session) => {
-              const userResponse = mockUserResponses.find(r => r.sessionId === session.id);
+              const userResponse = session.myResponse;
               const isUpcoming = isAfter(new Date(session.datetime), now);
               
               return (
@@ -228,7 +223,7 @@ const ParticipantDashboard: React.FC = () => {
                       <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(userResponse?.status || null)}`}>
                         {getStatusText(userResponse?.status || null)}
                       </span>
-                      {isUpcoming && userResponse?.status === null && (
+                      {isUpcoming && !userResponse && (
                         <div className="animate-pulse bg-primary-100 text-primary-700 text-xs px-2 py-1 rounded-full">
                           נדרשת תגובה
                         </div>
@@ -280,7 +275,7 @@ const ParticipantDashboard: React.FC = () => {
             </div>
           ) : (
             upcomingSessions.slice(0, 5).map((session) => {
-              const userResponse = mockUserResponses.find(r => r.sessionId === session.id);
+              const userResponse = session.myResponse;
               const sessionDate = new Date(session.datetime);
               const daysUntil = Math.ceil((sessionDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
               

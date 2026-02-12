@@ -8,7 +8,7 @@ import LanguageToggle from '../../components/common/LanguageToggle';
 import { ResponseStatus } from '../../types';
 import { format, parseISO, isPast } from 'date-fns';
 import { he, enUS } from 'date-fns/locale';
-import { CheckCircle, XCircle, HelpCircle, Calendar, Clock, LogIn } from 'lucide-react';
+import { CheckCircle, XCircle, HelpCircle, Calendar, Clock, LogIn, ArrowLeft } from 'lucide-react';
 
 const SessionJoinPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -30,7 +30,11 @@ const SessionJoinPage: React.FC = () => {
   const handleSubmit = async (status: ResponseStatus) => {
     if (!sessionId) return;
     setSelectedStatus(status);
-    submitResponse.mutate({ sessionId, status });
+    submitResponse.mutate({ sessionId, status }, {
+      onSuccess: () => {
+        setTimeout(() => navigate('/dashboard'), 1200);
+      }
+    });
   };
 
   const isSessionPast = session ? isPast(parseISO(session.datetime)) : false;
@@ -92,6 +96,15 @@ const SessionJoinPage: React.FC = () => {
       </div>
       
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+        {/* Back button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1 text-gray-500 hover:text-gray-700 mb-4 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm">{t('common.back')}</span>
+        </button>
+
         {/* Session Header */}
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">

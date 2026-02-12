@@ -53,7 +53,7 @@ const ParticipantModal: React.FC<ParticipantModalProps> = ({ isOpen, onClose, pa
       if (isEditing) {
         await updateParticipantMutation.mutateAsync({
           id: participant.id,
-          updates: participantData
+          data: participantData
         });
         toast.success(t('participants.participantUpdated'));
       } else {
@@ -63,7 +63,7 @@ const ParticipantModal: React.FC<ParticipantModalProps> = ({ isOpen, onClose, pa
       
       onClose();
     } catch (error) {
-      toast.error(isEditing ? 'שגיאה בעדכון המשתתף' : 'שגיאה ביצירת המשתתף');
+      toast.error(isEditing ? t('participants.updateError') : t('participants.createError'));
     }
   };
 
